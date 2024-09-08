@@ -1,0 +1,18 @@
+{
+  "name": "eastham-ww-raffle-winners-2024",
+  "version": "1.0.0",
+  "description": "The program to determine the winners of the 2024 Eastham, MA Windmill Weekend raffle.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "raffle": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}
