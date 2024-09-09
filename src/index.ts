@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as readline from 'readline';
 
 // Define the prize structure by generating an array of 70 prizes
-const prizes = Array.from({ length: 70 }, (_, i) => `Prize ${i + 1}`);
+const prizes = Array.from({ length: 80 }, (_, i) => `Prize${i + 1}`);
 
 // Function to read CSV and return buyer ID and ticket quantities
-async function parseCSV(filePath: string): Promise<Map<string, number>> {
+export async function parseCSV(filePath: string): Promise<Map<string, number>> {
     const fileStream = fs.createReadStream(filePath);
     const rl = readline.createInterface({
         input: fileStream,
@@ -23,7 +23,7 @@ async function parseCSV(filePath: string): Promise<Map<string, number>> {
 }
 
 // Function to create a pool of tickets from the ticket map
-function createTicketPool(ticketMap: Map<string, number>): string[] {
+export function createTicketPool(ticketMap: Map<string, number>): string[] {
     const ticketPool: string[] = [];
 
     ticketMap.forEach((quantity, buyerId) => {
@@ -36,7 +36,7 @@ function createTicketPool(ticketMap: Map<string, number>): string[] {
 }
 
 // Function to shuffle the ticket pool (Fisher-Yates Shuffle)
-function shuffle(array: string[]): string[] {
+export function shuffle(array: string[]): string[] {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]]; // Swap elements
@@ -45,7 +45,7 @@ function shuffle(array: string[]): string[] {
 }
 
 // Function to select winners
-function selectWinners(ticketPool: string[], prizes: string[]): Map<string, string> {
+export function selectWinners(ticketPool: string[], prizes: string[]): Map<string, string> {
     const winners = new Map<string, string>();
 
     for (const prize of prizes) {
@@ -58,7 +58,7 @@ function selectWinners(ticketPool: string[], prizes: string[]): Map<string, stri
 }
 
 // Main function to run the raffle
-async function runRaffle(csvPath: string) {
+export async function runRaffle(csvPath: string) {
     // Step 1: Parse the CSV to get buyer IDs and their ticket counts
     const ticketMap = await parseCSV(csvPath);
 
@@ -73,9 +73,9 @@ async function runRaffle(csvPath: string) {
 
     // Step 5: Output the winners
     winners.forEach((buyerId, prize) => {
-        console.log(`${prize}: ${buyerId}`);
+        console.log(`${prize},${buyerId}`);
     });
 }
 
 // Run the raffle
-runRaffle('./src/total-orders-sample.csv').catch(console.error);
+runRaffle('./src/ticket-buyer-list-by-quantity.csv').catch(console.error);
