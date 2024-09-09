@@ -19,6 +19,7 @@ export async function parseCSV(filePath: string): Promise<Map<string, number>> {
         ticketMap.set(buyerId, parseInt(quantity));
     }
 
+
     return ticketMap;
 }
 
@@ -50,6 +51,7 @@ export function selectWinners(ticketPool: string[], prizes: string[]): Map<strin
 
     for (const prize of prizes) {
         const winningIndex = Math.floor(Math.random() * ticketPool.length);
+        console.log(winningIndex)
         const winningTicket = ticketPool.splice(winningIndex, 1)[0]; // Remove the ticket from the pool
         winners.set(prize, winningTicket); // Associate prize with winner
     }
@@ -73,9 +75,9 @@ export async function runRaffle(csvPath: string) {
 
     // Step 5: Output the winners
     winners.forEach((buyerId, prize) => {
-        console.log(`${prize},${buyerId}`);
+        // console.log(`${prize},${buyerId}`);
     });
 }
 
 // Run the raffle
-runRaffle('./src/ticket-buyer-list-by-quantity.csv').catch(console.error);
+runRaffle('./src/ticket-buyer-list-by-quantity-and-id.csv').catch(console.error);
