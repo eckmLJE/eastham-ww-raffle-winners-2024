@@ -5,7 +5,7 @@ import * as readline from 'readline';
 const prizes = Array.from({ length: 80 }, (_, i) => `Prize${i + 1}`);
 
 // Function to read CSV and return buyer ID and ticket quantities
-export async function parseCSV(filePath: string): Promise<Map<string, number>> {
+export async function parseCSV(filePath: string): Promise<{ ticketMap: Map<string, number>, buyerNameMap: Map<string, string> }> {
     const fileStream = fs.createReadStream(filePath);
     const rl = readline.createInterface({
         input: fileStream,
@@ -13,14 +13,16 @@ export async function parseCSV(filePath: string): Promise<Map<string, number>> {
     });
 
     const ticketMap = new Map<string, number>();
+    const buyerNameMap = new Map<string, string>();
 
     for await (const line of rl) {
-        const [buyerId, quantity] = line.split(',');
+        const [buyerId, quantity, name] = line.split(',');
         ticketMap.set(buyerId, parseInt(quantity));
+        buyerNameMap.set(buyerId, name);
     }
 
 
-    return ticketMap;
+    return { ticketMap, buyerNameMap };
 }
 
 // Function to create a pool of tickets from the ticket map
@@ -61,7 +63,7 @@ export function selectWinners(ticketPool: string[], prizes: string[]): Map<strin
 // Main function to run the raffle
 export async function runRaffle(csvPath: string) {
     // Step 1: Parse the CSV to get buyer IDs and their ticket counts
-    const ticketMap = await parseCSV(csvPath);
+    const { ticketMap, buyerNameMap } = await parseCSV(csvPath);
 
     // Step 2: Create a pool of tickets
     let ticketPool = createTicketPool(ticketMap);
@@ -74,9 +76,10 @@ export async function runRaffle(csvPath: string) {
 
     // Step 5: Output the winners
     winners.forEach((buyerId, prize) => {
-        console.log(`${prize},${buyerId}`);
+        const buyerName = buyerNameMap.get(buyerId);
+        console.log(`${prize},${buyerId},${buyerName}`);
     });
 }
 
 // Run the raffle
-runRaffle('./src/ticket-buyer-list-by-quantity-and-id.csv').catch(console.error);
+runRaffle('./src/buyer-list-with-names.csv').catch(console.error);
